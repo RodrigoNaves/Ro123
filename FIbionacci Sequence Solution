@@ -1,0 +1,146 @@
+/*This code has been written in the programming language C++ in Visual Studio version 2017
+date: 17 November 2019
+Name: Roderick Maxted
+email: r.pmp@hotmail.com*/
+#include "pch.h"
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <iomanip>
+#include <fstream>
+
+using namespace std;
+
+
+unsigned long long int * sequenceSize = NULL;  //Pointer to sequenceSize which will contain the sequence that will be generated, initialized to nothing.
+unsigned long long int * digitArray = NULL; //Pointer to digitArray. It will be used to save digit length of every number, initialized to nothing.
+int userInput[2]; //Array where input from user is saved as per requirement.
+int sizeInput = 0;    // variable that will contain size needed for Array.
+int digitsNum = 0; // Variable that will contain  the digits the user would like to know.
+
+//function declaration
+long long int countDigit(unsigned long long int n);
+
+
+int main(void)
+{
+	label:
+	for (int i = 0; i < sizeInput; i++) {
+		userInput[i] = 0; //Initialize all elements in sizeInput array to zero.
+	}
+
+	cout << "Please input the sequence size you would like to calculate. Please make sure you input a positive integer." << endl;
+	cout << endl;
+	 
+	while (!(cin>>userInput[0]) ) {  //validating the data type is correct for sequence size. If data is not integer it will ignore and delete input.
+		cout << "Invalid. Please enter a positive integer." << endl; 
+		cin.clear();
+		cin.ignore(123,'\n');
+	}
+
+	if (userInput[0]<=0){ //second validation, if data is a negative integer, it will ignore and delete input and send back to label.
+		cin.clear();
+		cin.ignore(123, '\n');
+		cout << "Invalid. Please enter a positive integer." << endl;
+		goto label;
+	}
+			
+	else
+
+	cout << "Please input the numbers digit length you would like to search for in the sequence. Please make sure you input a positive integer." << endl;
+	cout << endl;
+
+    label1:
+
+	while (!(cin >> userInput[1])) {//validating the data type is correct for digit selection. If data is not integer it will ignore and delete input.
+		cout << "Invalid. Please enter a positive integer." << endl;
+		cin.clear();
+		cin.ignore(123, '\n');
+	}
+	
+	if (userInput[1] <= 0) { //second validation, if data is a negative integer, it will ignore and delete input and send back to label1.
+		cin.clear();
+		cin.ignore(123, '\n');
+		cout << "Invalid. Please enter a positive integer." << endl;
+		goto label1;
+	}
+
+	else
+
+	sizeInput = userInput[0]; // transer data from array into individual variable sizeInput.
+	digitsNum = userInput[1]; // transer data from array into individual variable userInput.
+	
+
+	sequenceSize = new unsigned long long int[sizeInput];
+
+	for (int i = 0; i < sizeInput; i++) {
+		sequenceSize[i] = 0; //Initialize all elements to zero.
+	}
+
+
+	cout << "The sequence size you typed in is  " << sizeInput << endl;
+	cout << "and you have chosen to search for numbers with " << digitsNum << " digits " << endl;
+	cout << endl;
+
+	unsigned long long int PosArray = 2;
+	unsigned long long int PosArray1behind = 1;
+	unsigned long long int PosArray2behind = 0;
+
+	sequenceSize[0] = 0; //initialize first position in array to zero.
+	sequenceSize[1] = 1; //initialize second position in array to one.
+
+	for (int i = 0; i < sizeInput; i++) { // algorithm to generate sequence.
+
+		sequenceSize[PosArray] = sequenceSize[PosArray1behind] + sequenceSize[PosArray2behind];
+		PosArray++;
+		PosArray1behind++;
+		PosArray2behind++;
+	}
+
+
+
+	digitArray = new unsigned long long int[sizeInput]; //array that will save the result of function countDigit applied to sequenceSize array.
+
+	for (int i = 0; i < sizeInput; i++) { //algorithm that generates the number of digits in every number of the sequence generated, and saves into digitArray.
+
+		countDigit(sequenceSize[i]);
+		digitArray[i] = countDigit(sequenceSize[i]);
+
+	}
+
+	int digitsSum = 0;
+
+	for (int i = 0; i < sizeInput; i++) { // Counting the amount of numbers in dinamyc array digitArray
+
+		if (digitsNum == digitArray[i])
+			digitsSum++;
+	}
+
+	cout << "The amount of numbers in the sequence with " << digitsNum << "  digits is  " << digitsSum << endl;
+	cout << endl;
+	cout << "The sequence generated is displayed below:" << endl;
+
+	int count = 1;
+
+	cout << left << setw(9) << setfill(' ') << "No." <<  "Sequence" << endl;
+	for (int i = 0; i < sizeInput; i++) {
+		cout << left << setw(9) << setfill(' ') << count << sequenceSize[i] << endl;
+		count++;
+
+	}
+
+	system("PAUSE");
+
+	return 0;
+}
+
+
+//function definition
+
+long long int countDigit(unsigned long long int n)
+{
+	if (n == 0)
+		return 0;
+	return 1 + countDigit(n / 10);
+}
+
